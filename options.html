@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>专注助手设置</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 200px;
+      background: #f5f5f5;
+      padding: 20px 0;
+    }
+    
+    .sidebar-item {
+      padding: 12px 24px;
+      cursor: pointer;
+    }
+    
+    .sidebar-item.active {
+      background: #e0e0e0;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 30px;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .time-range {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background: #45a049;
+    }
+    
+    .weekday-settings {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .weekday-item {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #eee;
+    }
+    
+    .time-range-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .time-range-item input[type="time"] {
+      width: auto;
+    }
+    
+    .quick-settings {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .quick-settings button {
+      background: #f0f0f0;
+      color: #333;
+      padding: 8px 16px;
+    }
+    
+    .add-time, .remove-time {
+      padding: 4px 8px;
+      min-width: 30px;
+    }
+    
+    .add-time {
+      background: #4CAF50;
+    }
+    
+    .remove-time {
+      background: #f44336;
+    }
+    
+    .global-switches {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .switch-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .weekday-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .add-time-range {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .time-range {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .remove-range {
+      background: #f44336;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    
+    .weekday-item {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    input[type="time"] {
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 120px;
+    }
+    
+    .weekday-item.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    
+    .weekday-item.disabled input,
+    .weekday-item.disabled button {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-item active" data-tab="basic">基础设置</div>
+      <div class="sidebar-item" data-tab="time">拦截时段</div>
+      <div class="sidebar-item" data-tab="rules">自定义规则</div>
+    </div>
+    
+    <div class="content">
+      <div id="basic" class="tab-content active">
+        <h2>基础设置</h2>
+        <div class="form-group">
+          <label>选择模型</label>
+          <select id="model">
+            <option value="deepseek-v3">DeepSeek-V3</option>
+            <option value="deepseek-reasoner">DeepSeek-R1</option>
+            <option value="deepseek-r1-distill-qwen-1.5b">DeepSeek-r1-distill-qwen-1.5b</option>
+            <option value="deepseek-r1-distill-llama-8b">DeepSeek-r1-distill-llama-8b</option>
+            <option value="deepseek-r1-distill-llama-70b">DeepSeek-r1-distill-llama-70b</option>
+            <option value="qwen2-1.5b-instruct">Qwen2-1.5b(开源版)</option>
+            <option value="qwen1.5-1.8b-chat">Qwen1.5-1.8b(开源版)</option>
+            <option value="qwen-1.8b-chat">Qwen-1.8b(开源版)</option>
+            
+          </select>
+        </div>
+        <div class="form-group">
+          <label>API Key</label>
+          <input type="password" id="apiKey" placeholder="请输入 API Key">
+        </div>
+      </div>
+      
+      <div id="time" class="tab-content">
+        <h2>拦截时段</h2>
+        
+        <div class="global-switches">
+          <label class="switch-item">
+            <input type="checkbox" id="workdaySwitch"> 启用工作日拦截
+          </label>
+          <label class="switch-item">
+            <input type="checkbox" id="weekendSwitch"> 启用休息日拦截
+          </label>
+        </div>
+
+        <div class="weekday-settings">
+          <div class="weekday-item" data-day="1">
+            <div class="weekday-header">
+              <h3>周一</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="weekday-item" data-day="2">
+            <div class="weekday-header">
+              <h3>周二</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="weekday-item" data-day="3">
+            <div class="weekday-header">
+              <h3>周三</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="weekday-item" data-day="4">
+            <div class="weekday-header">
+              <h3>周四</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="weekday-item" data-day="5">
+            <div class="weekday-header">
+              <h3>周五</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="weekday-item" data-day="6">
+            <div class="weekday-header">
+              <h3>周六</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="weekday-item" data-day="7">
+            <div class="weekday-header">
+              <h3>周日</h3>
+              <button type="button" class="add-time-range">添加时间段</button>
+            </div>
+            <div class="time-ranges">
+              <div class="time-range">
+                <input type="time" class="start-time">
+                <span>至</span>
+                <input type="time" class="end-time">
+                <button type="button" class="remove-range">×</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="rules" class="tab-content">
+        <h2>自定义规则</h2>
+        <div class="form-group">
+          <label>规则提示词</label>
+          <textarea id="customPrompt" rows="6" placeholder="请输入自定义规则提示词，帮助AI更准确地识别分心网站..."></textarea>
+        </div>
+      </div>
+      
+      <button id="save">保存设置</button>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html> 

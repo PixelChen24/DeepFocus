@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    
+    textarea, input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+    
+    #save {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    #openOptions {
+      background: #f0f0f0;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h3>Focus Settings</h3>
+  <textarea id="rule" placeholder="For example: block entertainment videos, keep educational content..."></textarea>
+  <input type="password" id="apiKey" placeholder="DeepSeek API Key">
+  <button id="save">save</button>
+  <button id="openOptions">高级设置</button>
+  <script src="popup.js"></script>
+</body>
+</html>
