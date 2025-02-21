@@ -61,7 +61,7 @@ function addTimeRange(dayElement) {
 }
 
 // 保存设置
-document.getElementById('save').addEventListener('click', () => {
+document.getElementById('save').addEventListener('click', async () => {
   const timeRanges = {};
   
   // 获取工作日和周末的启用状态
@@ -91,12 +91,18 @@ document.getElementById('save').addEventListener('click', () => {
     };
   }
   
-  // 保存设置
+  const negativeSamples = Array.from(document.querySelectorAll('.negative-sample')).map(sample => ({
+    domain: sample.querySelector('.domain').value,
+    title: sample.querySelector('.title').value,
+    timestamp: Date.now()
+  }));
+  
   const settings = {
     model: document.getElementById('model').value,
     apiKey: document.getElementById('apiKey').value,
     timeRanges,
-    customPrompt: document.getElementById('customPrompt').value
+    customPrompt: document.getElementById('customPrompt').value,
+    negativeSamples
   };
   
   chrome.storage.sync.set(settings, () => {
@@ -174,6 +180,66 @@ document.getElementById('weekendSwitch').addEventListener('change', function(e) 
   for (let day = 6; day <= 7; day++) {
     const dayContainer = document.querySelector(`.weekday-item[data-day="${day}"]`);
     dayContainer.classList.toggle('disabled', !isEnabled);
+  }
+});
+
+// 渲染负样本列表
+function renderNegativeSamples(samples) {
+  const container = document.getElementById('negativeSamples');
+  container.innerHTML = samples.map((sample, index) => `
+    <div class="negative-sample" data-index="${index}">
+      <input type="text" class="domain" value="${sample.domain}" placeholder="域名">
+      <input type="text" class="title" value="${sample.title}" placeholder="标题">
+      <button class="remove-sample">删除</button>
+    </div>
+  `).join('');
+}
+
+// 加载负样本
+chrome.storage.sync.get(['negativeSamples'], (data) => {
+  const samples = data.negativeSamples || [];
+  renderNegativeSamples(samples);
+});
+
+// 添加负样本
+document.getElementById('addNegativeSample').addEventListener('click', async () => {
+  const { negativeSamples = [] } = await chrome.storage.sync.get(['negativeSamples']);
+  if (negativeSamples.length >= 10) {
+    alert('最多只能添加10个负样本');
+    return;
+  }
+  
+  negativeSamples.unshift({ domain: '', title: '', timestamp: Date.now() });
+  await chrome.storage.sync.set({ negativeSamples });
+  renderNegativeSamples(negativeSamples);
+});
+
+// 处理负样本的修改和删除
+document.getElementById('negativeSamples').addEventListener('click', async (e) => {
+  if (e.target.classList.contains('remove-sample')) {
+    const sample = e.target.closest('.negative-sample');
+    const index = parseInt(sample.dataset.index);
+    
+    const { negativeSamples = [] } = await chrome.storage.sync.get(['negativeSamples']);
+    negativeSamples.splice(index, 1);
+    await chrome.storage.sync.set({ negativeSamples });
+    renderNegativeSamples(negativeSamples);
+  }
+});
+
+document.getElementById('negativeSamples').addEventListener('change', async (e) => {
+  if (e.target.classList.contains('domain') || e.target.classList.contains('title')) {
+    const sample = e.target.closest('.negative-sample');
+    const index = parseInt(sample.dataset.index);
+    
+    const { negativeSamples = [] } = await chrome.storage.sync.get(['negativeSamples']);
+    negativeSamples[index] = {
+      domain: sample.querySelector('.domain').value,
+      title: sample.querySelector('.title').value,
+      timestamp: negativeSamples[index].timestamp
+    };
+    
+    await chrome.storage.sync.set({ negativeSamples });
   }
 });
 

@@ -76,23 +76,41 @@
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    #reportError {
+      background-color: rgba(255, 99, 71, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 99, 71, 0.4);
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    #reportError:hover {
+      background-color: rgba(255, 99, 71, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🚫 专注提醒</h1>
     <p>这个页面可能影响您的工作效率！<br>请及时回到工作中来。</p>
-    <button id="return">返回工作</button>
+    <div class="button-group">
+      <button id="return">返回工作</button>
+      <button id="reportError">这是误报</button>
+    </div>
   </div>
 
-  <script>
-    // 随机背景图片数组
-    const backgrounds = [
-      'https://images.pexels.com/photos/1172207/pexels-photo-1172207.jpeg',
-    ];
-
-    // 随机选择背景图片
-    document.body.style.backgroundImage = `url(${backgrounds[Math.floor(Math.random() * backgrounds.length)]})`;
-  </script>
+  <script src="focus.js"></script>
 </body>
 </html>

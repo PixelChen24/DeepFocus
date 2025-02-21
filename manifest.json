@@ -34,7 +34,7 @@
     },
     "options_page": "options.html",
     "web_accessible_resources": [{
-      "resources": ["focus.html"],
+      "resources": ["focus.html", "focus.js"],
       "matches": ["<all_urls>"]
     }]
   }

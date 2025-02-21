@@ -128,10 +128,16 @@ async function updatePageTitle(tabId) {
           console.warn('未设置 API Key');
           return;
         }
-        console.log('apiKey:', apiKey);
-        console.log('customPrompt', customPrompt)
 
-        const systemPrompt = customPrompt || "你是一个网页内容分析助手，帮助判断网页是否可能影响工作效率。";
+        // 获取负样本
+        const { negativeSamples = [] } = await chrome.storage.sync.get(['negativeSamples']);
+        const negativeSamplesText = negativeSamples.length > 0 
+          ? `\n以下是之前误判的例子，这些都不应该被拦截：\n${negativeSamples.map(s => `- 域名：${s.domain}，标题：${s.title}`).join('\n')}`
+          : '';
+        const systemPrompt = customPrompt || "你是一个网页内容分析助手，帮助判断网页是否可能影响工作效率。请注意，影响效率的网页包括娱乐信息的网页，闲聊社区帖子，日常生活分享（与正经工作无关的信息）等等。你应当仔细阅读网页的标题来判断其是否真的会影响工作效率，有一些网页不应该被列入其中，包括阅读相关工作领域的推文，查看订单信息等等。";
+        const finalSystemPrompt = systemPrompt + negativeSamplesText;
+        console.log("System Prompt: ", finalSystemPrompt);
+        const userPrompt = `请分析这个网页是否可能影响工作效率。网页信息：\n标题：${web_title} 域名：${web_domain}\n请直接回答"是"或"否"。`;
         
         const response = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
           method: 'POST',
@@ -144,11 +150,11 @@ async function updatePageTitle(tabId) {
             "messages": [
               {
                 "role": "system",
-                "content": systemPrompt
+                "content": finalSystemPrompt
               },
               {
                 "role": "user",
-                "content": `请分析这个网页是否可能影响工作效率。网页信息：\n域名：${web_domain}\n标题：${web_title}\n请直接回答"是"或"否"。`
+                "content": userPrompt
               }
             ]
           })
@@ -160,7 +166,7 @@ async function updatePageTitle(tabId) {
         if (answer === '是') {
           // 打开提醒页面
           chrome.tabs.update(tabId, {
-            url: chrome.runtime.getURL('focus.html')
+            url: chrome.runtime.getURL(`focus.html?title=${encodeURIComponent(web_title)}&domain=${encodeURIComponent(web_domain)}`)
           });
         }
       } catch (error) {

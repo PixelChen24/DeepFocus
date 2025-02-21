@@ -203,6 +203,31 @@
     .weekday-item.disabled button {
       pointer-events: none;
     }
+    
+    .negative-sample {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #f5f5f5;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+    
+    .negative-sample input {
+      flex: 1;
+    }
+    
+    .secondary-button {
+      background: #666;
+      margin-top: 10px;
+    }
+    
+    .hint {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 1em;
+    }
   </style>
 </head>
 <body>
@@ -219,8 +244,8 @@
         <div class="form-group">
           <label>选择模型</label>
           <select id="model">
-            <option value="deepseek-v3">DeepSeek-V3</option>
-            <option value="deepseek-reasoner">DeepSeek-R1</option>
+            <option value="deepseek-v3">DeepSeek-V3(推荐)</option>
+            <option value="deepseek-reasoner">DeepSeek-R1(不推荐，极慢)</option>
             <option value="deepseek-r1-distill-qwen-1.5b">DeepSeek-r1-distill-qwen-1.5b</option>
             <option value="deepseek-r1-distill-llama-8b">DeepSeek-r1-distill-llama-8b</option>
             <option value="deepseek-r1-distill-llama-70b">DeepSeek-r1-distill-llama-70b</option>
@@ -251,7 +276,7 @@
         <div class="weekday-settings">
           <div class="weekday-item" data-day="1">
             <div class="weekday-header">
-              <h3>周一</h3>
+              <h3 style="color: orangered;">周一</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -266,7 +291,7 @@
           
           <div class="weekday-item" data-day="2">
             <div class="weekday-header">
-              <h3>周二</h3>
+              <h3 style="color: orangered;">周二</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -281,7 +306,7 @@
           
           <div class="weekday-item" data-day="3">
             <div class="weekday-header">
-              <h3>周三</h3>
+              <h3 style="color: orangered;">周三</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -296,7 +321,7 @@
           
           <div class="weekday-item" data-day="4">
             <div class="weekday-header">
-              <h3>周四</h3>
+              <h3 style="color: orangered;">周四</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -311,7 +336,7 @@
           
           <div class="weekday-item" data-day="5">
             <div class="weekday-header">
-              <h3>周五</h3>
+              <h3 style="color: orangered;">周五</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -326,7 +351,7 @@
           
           <div class="weekday-item" data-day="6">
             <div class="weekday-header">
-              <h3>周六</h3>
+              <h3 style="color: green;">周六</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -341,7 +366,7 @@
           
           <div class="weekday-item" data-day="7">
             <div class="weekday-header">
-              <h3>周日</h3>
+              <h3 style="color: green;">周日</h3>
               <button type="button" class="add-time-range">添加时间段</button>
             </div>
             <div class="time-ranges">
@@ -361,6 +386,13 @@
         <div class="form-group">
           <label>规则提示词</label>
           <textarea id="customPrompt" rows="6" placeholder="请输入自定义规则提示词，帮助AI更准确地识别分心网站..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <h3>负样本管理</h3>
+          <p class="hint">这些网页将被标记为"不应拦截"的示例（最多10个）</p>
+          <div id="negativeSamples"></div>
+          <button id="addNegativeSample" class="secondary-button">添加负样本</button>
         </div>
       </div>
       
